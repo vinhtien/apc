@@ -120,7 +120,7 @@ class Extraction:
                 for j in range(len(splay)):
                     flat = self.flatten(splay[j])
                     ct = pd.to_datetime(flat.get('created_time'))
-                    timedeltatot.append(ct-self.time[i])
+                    timedeltas.append(ct-self.time[i])
                     commtimes.append(ct)
                     names.append(flat.get('from_name'))
                     messages.append(flat.get('message'))
@@ -133,8 +133,6 @@ class Extraction:
                 timedeltatot.extend(timedeltas)
             else:
                 indextups.extend([(self.time[i],np.nan)])
-                
-
         
         indexpc = pd.MultiIndex.from_tuples(indextups, names=('post_time', 'comment_time'))
         commentdf = pd.DataFrame({'name':nametot,
@@ -143,4 +141,3 @@ class Extraction:
             
         return commentdf
     
- 
