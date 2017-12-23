@@ -11,6 +11,7 @@ class FileIO:
     # Modules installed from http://pycryptodome.readthedocs.io/en/latest/src/installation.html#
     from Crypto.Cipher import AES  # used to handle file encryption and decryption
     from Crypto.Random import get_random_bytes  # this one is used to generate 16 bytes random key
+    #SD
 
 
     """
