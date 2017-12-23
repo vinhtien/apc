@@ -101,7 +101,7 @@ class Extraction:
     
     def getPostCommentMultiIndexDF(self):
         '''
-        Returns a pandas.DataFrame() with MultiIndex() 'post_time':'comment_times':'name','message'
+        Returns a pandas.DataFrame() with MultiIndex() 'post_time':'comment_times':'name','message','delta'.
         
         '''
         comments = pd.DataFrame(self._df['comments'])
