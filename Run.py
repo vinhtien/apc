@@ -29,7 +29,7 @@ m = Main(__userToken, __onetime_used, __dataPath)
 
 
 ### LOAD DATA FROM FILE SYSTEM
-#data = m.read()
+#data = m.loadAllData()
 #print(data)
 #return data
 ####################################################################
