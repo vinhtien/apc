@@ -28,5 +28,6 @@ A group project under the course of Advanced Programming Concepts. This project 
     - Files: application.py, templates (folder)
     - As recommended by Facebook, Access Token should be retrieved directly from them and inputted directly into functions without storing
 
+@FOR TECHNICAL SPECIFICATION (REPORT)
 
 >There is a draft of Technical Specification docx file, please just feel free to play with it!
