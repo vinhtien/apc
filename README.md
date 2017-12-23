@@ -18,7 +18,7 @@ A group project under the course of Advanced Programming Concepts. This project 
     - Files: charts.py, Extraction.py
 
 @FOR ONLINE TOKEN RETRIEVING (George)
-    - Files: ...
+    - Files: application.py, templates (folder)
 
 
 @There is a draft of Technical Specification docx file, please just feel free to play with it!
