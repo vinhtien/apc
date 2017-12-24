@@ -10,7 +10,9 @@ Created on Sat Dec 16 15:00:32 2017
 ###  To retrieve data from FB (post, comment,...) of a person in JSON
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-class Core():
+
+class Core:
+
     import urllib.request
     import urllib.error as error
     import json, time
@@ -30,7 +32,7 @@ class Core():
         self._apiversion = 'v2.11/'
         self._mainURL = 'https://graph.facebook.com/' + self._apiversion
         self._timeOut = 1  # (seconds) used to wait in between URL retrieving:: MIN 18s/retrieve/account
-        self._networkTimeOut = 10  # (seconds) used to wait inside the __getJSON if there are error
+        self._networkTimeOut = 10  # (seconds) used to wait inside the __getJSON if there is an error
         self._numberOfRetries = 6  # used to define the number of retries of fail __getJSON
         self._getDataError = ""  # used to record errors
         self._totalRetrieve = None  # Batch counter: used to record batch of sub data retrieval time. NONE means not activated
@@ -38,6 +40,7 @@ class Core():
         self._retrieveCount = 1  # used to count every data retrieval time in a batch of data
         self.totalRequests = 0  # used to count total requests made by this class from Instance
         self._urlShow = True  # True to use in case of Debug. Can be set to False, no URL will be printed
+        self._batchSize = 100  # number of posts retrieved in a single API call (FYI: FB's default is 25)
 
 
     """
@@ -50,19 +53,16 @@ class Core():
             @reactionsOfPost = False # True: retrieve reactions in the post
     """
 
-    def _prepareURL(self, userinfo=False, posts=False, subPostId = '', commentsOfPost=False, reactionsOfPost=False):
+    def _prepareURL(self, userinfo=False, posts=False, subPostId = '', commentsOfPost=False, reactionsOfPost=False, allConnections = False):
         # DEFAULT, Only receive the userid and user name
-        preFields = 'me?fields='
+        fields = 'me?fields=id,name'
         if (userinfo):
+            fields = 'me?fields='
             # if receive all posts
-            preFields +=  self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost)  # return 'posts'
+            fields += self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost, allConnections)
         else:
-            if (subPostId != ''):
-                preFields = subPostId + '?fields='
-                # At this stage, only only comments or reactions will be retrieve in a time
-                preFields += self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost)  # return 'posts'
-                #if (reactionsOfPost): preFields += 'reactions'  # For future scalability
-        return (self._mainURL + preFields + self._accessToken)
+            fields = self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost, allConnections)
+        return self._mainURL + fields + self._accessToken
 
 
     """
@@ -120,11 +120,11 @@ class Core():
             @param reactionsOfPost: bool  # True, receive Reactions, nothing else!!!
     """
 
-    def _getData(self, userinfo=False, posts=False, subPostId='', commentsOfPost=False, reactionsOfPost=False):
+    def _getData(self, userinfo=False, posts=False, subPostId='', commentsOfPost=False, reactionsOfPost=False, allConnetions = False):
         # 1::  prepare a URL that includes all necessary parameters for data retrieval
         parentURL = self._prepareURL(userinfo, posts, subPostId, commentsOfPost, reactionsOfPost)
         # 2::  Because the data will be return in JSON with levels of keywords, this to know which level we should get the info from
-        field = self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost)
+        field = self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost, allConnetions)
         # COUNTER and START MESSAGE
         self._getDataCounter()
         # 3::  Start to get the JSON - This will get the FIRST PAGE and put into a list-type data variable
@@ -194,18 +194,22 @@ class Core():
         This is used to recognize which fields will be in the JSON before retrieve the data
         """
 
-    def _getFields(self, posts=False, subPostId='', commentsOfPost=False, reactionsOfPost=False):
+    def _getFields(self, posts=False, subPostId='', commentsOfPost=False, reactionsOfPost=False, allConnections=False):
         if (posts):
             field = 'posts'  # If the retrieve data are POSTS, Otherwise...
+            if allConnections:
+                field += '{comments{reactions,comments{reactions}},reactions}'  # If all comments and reactions are requested
             return field
         elif (subPostId != ''):  # If there is subPostId input, will receive comment or reaction
-            # You may ask why SubPostId should be here, it is just for future scalable or
-            # We could delete it in production
-            # Then, the field could only be Comments || OR || Reactions
-            if (commentsOfPost):
+            # Then, the field could only be Comments || OR/AND || Reactions
+            field = subPostId + '?fields='
+            if (commentsOfPost and reactionsOfPost):
+                field = 'comments,reactions'
+                return field
+            elif (commentsOfPost):
                 field = 'comments'
                 return field
-            if (reactionsOfPost):
+            elif (reactionsOfPost):
                 field = 'reactions'
                 return field
         return None
@@ -216,6 +220,7 @@ class Core():
         """
 
     def _getNextURL(self, field, data):
+        import re
         try:
             # This case happens when this is the FIRST PAGE
             result = data[0][field]['paging']['next']
@@ -232,6 +237,8 @@ class Core():
                     except:
                         # There is no NEXT PAGE
                         return None
+        result = re.search(r'(.+limit=)(\d+)(.+)', result)
+        result = result.group(1) + str(self._batchSize) + result.group(3)  # Insert our own batchsize
         return result
 
 
@@ -269,23 +276,37 @@ class Core():
 
 
     def getUser(self):
-        url = self._prepareURL(True)
+        url = self._prepareURL(userinfo=True)
         result = [self._getJSON(url)]
         print('User info is retrieved successful!')
         return result
+
     def printUser(self):
         print(self.getUser())
+
     def getPosts(self):
-        return(self._getData(True, True))
+         return(self._getData(True, True))
+
     def printPosts(self):
         print(self.getPosts())
+
     def getComments(self, posts):
         return(self._getSubData(posts, True))
         #return(self._getData(False, False, posts, True))
+
     def printComments(self, posts):
         print(self.getComments(posts))
+
     def getReactions(self, posts):
         return (self._getSubData(posts, False, True))
-        #return(self._getData(False, False, posts, False, True))
+        # return(self._getData(False, False, posts, False, True))
+
     def printReactions(self, posts):
         print(self.getReactions(posts))
+
+    def setBatchSize(self, size):
+        #  Sets size of request (number of posts retrieved in a single API call)
+        self._batchSize = size
+elnur = Core('EAACEdEose0cBAC9OkaCNrgPtDObkwoJYW30xH1P9ZCfPAJW5R5MUIdmWpKTmNoZAgTTiURAb3qlQYsEThDVZAh5oOIxRrHZCPONilVKpqGFzZAan7b1ywkdyIJPIrPsxEyHf5vgcRBdGZACEZCGyHfyLiL9YGlswJIgMtXjZBblwUhRMEHYGBij9ttMscBKwtRMZD')
+elnur.setBatchSize(300)
+elnur.printPosts()

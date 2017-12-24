@@ -8,6 +8,7 @@ A group project under the course of Advanced Programming Concepts. This project 
     - This is the most simplified version with only-one file with all neccessary functions and methods to retrieve data from FB
     - Includes a simplify retry control, which helps to re-connect to the server whenever there was a fail
     - People can easily and quickly deploy this.
+    - Simply insert your token and run!
 
 >Version of Tien:
     - Files: Core.py, FileIO.py, Main.py, Run.py
