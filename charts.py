@@ -8,9 +8,29 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import Extraction
+import bokeh
+from bokeh.plotting import figure, output_file, show
 
 ###Further extraction
 data = Extraction.Extraction()._df
+
+class LineGraph:
+    def __init__(self, x, y, xlabel, ylabel, title, legend, outputfile):
+        self._x = x
+        self._y = y
+        self._xlabel = xlabel
+        self._ylabel = ylabel
+        self._title = title
+        self._legend = legend
+        self._outputfile = outputfile
+
+    def spawnLineGraph(self):
+        x = self._x
+        y = self._y
+        l = figure(title=self._title, x_axis_label=self._xlabel, y_axis_label=self._ylabel)
+        l.line(x, y, legend = "Posts", line_width=2)
+        show(l)
+
 times = pd.DatetimeIndex(data.created_time)
 data = data.set_index('created_time')
 ###Reactions
@@ -71,14 +91,9 @@ def getFriendsNReactPie():
 
 def getPostsPerYearLine():
     yearbins = [list(years).count(yearrange[i]) for i in range(len(yearrange))]
-    plt.plot(yearrange, yearbins, label='Posts')
-    # plt.plot(x2, y2, label ='Second Line')
-    plt.xlabel('Year')
-    plt.ylabel('Post')
-    plt.title('Frequency of posts per year')
-    plt.xticks(np.arange(min(yearrange), max(yearrange) + 1, 1.0))
-    plt.legend()
-    plt.show()
+    l = LineGraph(yearrange, yearbins, 'Year', 'Posts', ' Frequency of Posts Posts Per Year', 'Posts', 'ppyl.html')
+    l.spawnLineGraph()
+
 
 
 def getPostsPerMonthLine():
@@ -141,9 +156,9 @@ def getTypeReactsAll():
     reactbins = [len()]
 
 
-print()
+l = LineGraph()
 
-
+getPostsPerYearLine()
 
 '''
 plt.xlabel('Time')
