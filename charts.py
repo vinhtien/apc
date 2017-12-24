@@ -132,9 +132,10 @@ def getReactsPerHourBars():
     plt.xticks(np.arange(min(hourrange), max(hourrange) + 1, 1.0))
     plt.show()
 
-
-c = ChartLauncher()
-c.getPostsPerDayOfWeekLine()
 '''
+c = ChartLauncher()
+graph = c.getPostsPerDayOfWeekLine()
+graph.spawnGraph()
+
 
 
