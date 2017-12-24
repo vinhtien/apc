@@ -1,57 +1,55 @@
-<!-- <link rel="stylesheet" href="/static/style.css" type="text/css"> -->
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-* {
-box-sizing: border-box;
-}
- 
-*:focus {
-	outline: none;
-}
+	<style>
+		* {
+		box-sizing: border-box;
+		}
+		 
+		*:focus {
+			outline: none;
+		}
 
-body {
-font-family: Arial;
-background-color: #5F9EA0;
-padding: 150px;
-}
+		body {
+		font-family: Arial;
+		background-color: #5F9EA0;
+		padding: 150px;
+		}
 
-.welcome {
-text-align: center;
-color: #DEB887;
-}
+		.welcome {
+		text-align: center;
+		color: #DEB887;
+		}
 
-.btn {
-  border: 2px solid transparent;
-  background: #DEB887;
-  color: #000000;
-  font-size: 16px;
-  line-height: 25px;
-  padding: 10px 0;
-  text-decoration: none;
-  text-shadow: none;
-  border-radius: 3px;
-  box-shadow: none;
-  transition: 0.25s;
-  display: block;
-  width: 250px;
-  margin: 0 auto;
-}
- 
-.btn:hover {
-  background-color: #008B8B;
-}
-</style>
+		.btn {
+		  border: 2px solid transparent;
+		  background: #DEB887;
+		  color: #000000;
+		  font-size: 16px;
+		  line-height: 25px;
+		  padding: 10px 0;
+		  text-decoration: none;
+		  text-shadow: none;
+		  border-radius: 3px;
+		  box-shadow: none;
+		  transition: 0.25s;
+		  display: block;
+		  width: 250px;
+		  margin: 0 auto;
+		}
+		 
+		.btn:hover {
+		  background-color: #008B8B;
+		}
+	</style>
 </head>
 
 <body>
-<form action="/welcome" method="POST">
-	<div class="welcome">
-		<h1>Welcome to facebook analytics</h1>
-	</div>
-	<input type="submit" value="Press to continue" class="btn">
-	</div>
-</form>
+	<form action="/welcome" method="POST">
+		<div class="welcome">
+			<h1>Welcome to facebook analytics</h1>
+		</div>
+		<input type="submit" value="Press to continue" class="btn">
+	</form>
 </body>
 </html>

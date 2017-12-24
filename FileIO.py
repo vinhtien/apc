@@ -12,6 +12,15 @@ class FileIO:
     from Crypto.Cipher import AES  # used to handle file encryption and decryption
     from Crypto.Random import get_random_bytes  # this one is used to generate 16 bytes random key
 
+
+    """
+        Constructor
+        @:param filename: list  # remember if we retrieve data from Graph API without any fields,
+                                 we got a JSON of userinfo (user name and user id)
+                                 put that info here, the function do the rest
+        @:param onetime_used: bool  # if you only use this FileIO class => pass this
+        @:param dir: str  # if you want a different dir of your data, set here, if not, it will be the same as this FileIO
+    """
     def __init__(self, filename, onetime_used=False, dir=None):
         # If there is no dir defined, the dir will be as same as of this file dir
         if (dir==None): self._dir = self.os.path.dirname(self.os.path.realpath(__file__))
@@ -26,7 +35,9 @@ class FileIO:
 
 
     """
-        Write the content to file under utf-8 encodings
+        Encrypt and write data to file system
+        @:param post: bool  # True => write the .posts ext, which is the posts ONLY file
+                              False => write the .postsNreactz ext, which is the posts+comments+reactions file
     """
     def writeToFile(self, data, post = True):
         # Convert to JSON
@@ -45,6 +56,11 @@ class FileIO:
                 print("Could not write to file %s!", self._getPath(post))
                 raise
 
+    """
+        Decrypt and read data from file system
+        @:param post: bool  # True => open the .posts ext, which is the posts ONLY file
+                              False => open the .postsNreactz ext, which is the posts+comments+reactions file
+    """
     def readFromFile(self, post = True):
         if (self._fileExist(self._getPath(post))):
             print('Loading data from file %s' % self._getPath(post))
