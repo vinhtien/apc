@@ -7,7 +7,6 @@ Created on Sat Dec 16 14:52:36 2017
 import json
 import pandas as pd
 import numpy as np
-import collections
 
 file = open('postsNreactz.txt', 'r')
 output = json.loads(file.read())
@@ -128,9 +127,6 @@ class Extraction:
         return commentdf
 
     def getFriendsCommentReactTotalDF(self):
-        '''
-        Returns pandas.DataFrame with columns of 'name', 'comments'(count), 'reactions'(count)
-        '''
         commfriends = self.getPostCommentMultiIndexDF().groupby('name')
         ckeys = list(commfriends.groups.keys())
         reactfriends = self.getnReactionsxFriendPivot().groupby('name')
@@ -140,6 +136,7 @@ class Extraction:
         commtots = []
         for i in friendrange:
             if i in ckeys:
+                pass
                 commtots.append(len(commfriends.get_group(i)['name']))
             else:
                 commtots.append(np.nan)
@@ -148,4 +145,9 @@ class Extraction:
             else:
                 reactots.append(np.nan)
         dfdict = {'name':friendrange, 'comments':commtots, 'reactions':reactots}
-        return pd.DataFrame(dfdict)
+        df = pd.DataFrame(dfdict)
+        df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
+        return df
+e = Extraction()
+df = e.getFriendsCommentReactTotalDF()
+print(df)
