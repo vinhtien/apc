@@ -55,13 +55,13 @@ class Core():
         preFields = 'me?fields='
         if (userinfo):
             # if receive all posts
-            if (posts): preFields += 'posts'
+            preFields +=  self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost)  # return 'posts'
         else:
             if (subPostId != ''):
                 preFields = subPostId + '?fields='
                 # At this stage, only only comments or reactions will be retrieve in a time
-                if (commentsOfPost): preFields += 'comments'
-                if (reactionsOfPost): preFields += 'reactions'
+                preFields += self._getFields(posts, subPostId, commentsOfPost, reactionsOfPost)  # return 'posts'
+                #if (reactionsOfPost): preFields += 'reactions'  # For future scalability
         return (self._mainURL + preFields + self._accessToken)
 
 
@@ -199,6 +199,8 @@ class Core():
             field = 'posts'  # If the retrieve data are POSTS, Otherwise...
             return field
         elif (subPostId != ''):  # If there is subPostId input, will receive comment or reaction
+            # You may ask why SubPostId should be here, it is just for future scalable or
+            # We could delete it in production
             # Then, the field could only be Comments || OR || Reactions
             if (commentsOfPost):
                 field = 'comments'
