@@ -140,7 +140,6 @@ class Extraction:
         commtots = []
         for i in friendrange:
             if i in ckeys:
-                pass
                 commtots.append(len(commfriends.get_group(i)['name']))
             else:
                 commtots.append(np.nan)
