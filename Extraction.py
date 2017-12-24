@@ -17,7 +17,7 @@ class Extraction:
     '''
     Extraction() makes pandas.DataFrames of json output.
     Columns=['comments', 'id', 'message', 'reactions', 'stories', 'created_time']
-    Converts timestamps to datetime objects. 
+    Converts timestamps to datetime objects.
     '''
 
     def __init__(self):
@@ -126,3 +126,27 @@ class Extraction:
                                   'delta': timedeltatot}, index=indexpc)
 
         return commentdf
+
+    def getFriendsCommentReactTotalDF(self):
+        '''
+        Returns pandas.DataFrame with columns of 'name', 'comments'(count), 'reactions'(count)
+        '''
+        commfriends = self.getPostCommentMultiIndexDF().groupby('name')
+        ckeys = list(commfriends.groups.keys())
+        reactfriends = self.getnReactionsxFriendPivot().groupby('name')
+        rkeys = list(reactfriends.groups.keys())
+        friendrange = list(set(ckeys + rkeys))
+        reactots = []
+        commtots = []
+        for i in friendrange:
+            if i in ckeys:
+                pass
+                commtots.append(len(commfriends.get_group(i)['name']))
+            else:
+                commtots.append(np.nan)
+            if i in rkeys:
+                reactots.append(reactfriends.get_group(i)['total'][0])
+            else:
+                reactots.append(np.nan)
+        dfdict = {'name':friendrange, 'comments':commtots, 'reactions':reactots}
+        return pd.DataFrame(dfdict)

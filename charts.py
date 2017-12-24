@@ -29,34 +29,30 @@ class ChartLauncher:
         yearbins = [list(self.years).count(self.yearrange[i]) for i in range(len(self.yearrange))]
         l = LineGraph('Year', 'Posts', ' Frequency of Posts Posts Per Year')
         l.addLine(self.yearrange, yearbins, 'Posts', 2)
-        l.spawnGraph('ppyl.html')
         return l
 
     def getPostsPerMonthLine(self):
         monthbins = [list(self.months).count(self.monthrange[i]) for i in range(len(self.monthrange))]
         l = LineGraph('Month', 'Posts', 'Frequency of Posts per Month')
         l.addLine(self.monthrange, monthbins, 'Posts', 2)
-        l.spawnGraph('ppml.html')
         return l
 
     def getPostsPerDayOfWeekLine(self):
         daybins = [list(self.days).count(self.dayrange[i]) for i in range(len(self.dayrange))]
         l = LineGraph('Day', 'Posts', 'Frequency of Posts per Day')
         l.addLine(self.dayrange, daybins, 'Posts', 2)
-        l.spawnGraph('ppdl.html')
         return l
 
     def getPostsPerHourLine(self):
         hourbins = [list(self.hours).count(self.hourrange[i]) for i in range(len(self.hourrange))]
         l = LineGraph('Hour', 'Posts', 'Frequency of Posts per Hour')
         l.addLine(self.hourrange, hourbins, 'Posts', 2)
-        l.spawnGraph('pphl.html')
         return l
 
 
 class LineGraph:
     def __init__(self, xlabel, ylabel, title):
-        self.graph = l = figure(title=title, x_axis_label=xlabel, y_axis_label=ylabel)
+        self.graph = figure(title=title, x_axis_label=xlabel, y_axis_label=ylabel)
 
     def addLine(self, x, y, legend, line_width):
         self.graph.line(x, y, legend=legend, line_width=line_width)
@@ -138,8 +134,7 @@ def getReactsPerHourBars():
 
 
 c = ChartLauncher()
-c.getPostsPerHourLine()
 c.getPostsPerDayOfWeekLine()
-c.getPostsPerMonthLine()
-c.getPostsPerYearLine()
 '''
+
+
