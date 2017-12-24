@@ -11,8 +11,41 @@ import Extraction
 import bokeh
 from bokeh.plotting import figure, output_file, show
 
-###Further extraction
-data = Extraction.Extraction()._df
+
+class ChartLauncher:
+    def __init__(self):
+        self.data = Extraction.Extraction()
+        self.time = self.data.time
+        self.years = self.time.year
+        self.yearrange = list(map(int, sorted(set(sorted(self.years)[1:]))))
+        self.months = self.time.month
+        self.monthrange = np.arange(1, 13)
+        self.days = self.time.dayofweek
+        self.dayrange = np.arange(7)
+        self.hours = self.time.hour
+        self.hourrange = np.arange(24)
+
+    def getPostsPerYearLine(self):
+        yearbins = [list(self.years).count(self.yearrange[i]) for i in range(len(self.yearrange))]
+        l = LineGraph(yearrange, yearbins, 'Year', 'Posts', ' Frequency of Posts Posts Per Year', 'Posts', 'ppyl.html')
+        l.spawnLineGraph()
+
+    def getPostsPerMonthLine(self):
+        monthbins = [list(self.months).count(self.monthrange[i]) for i in range(len(self.monthrange))]
+        l = LineGraph(self.monthrange, monthbins, 'Month', 'Posts', 'Frequency of Posts per Month', 'Posts',
+                      'ppml.html')
+        l.spawnLineGraph()
+
+    def getPostsPerDayOfWeekLine(self):
+        daybins = [list(self.days).count(self.dayrange[i]) for i in range(len(self.dayrange))]
+        l = LineGraph(self.dayrange, daybins, 'Day', 'Posts', 'Frequency of Posts per Day', 'Posts', 'ppdl.html')
+        l.spawnLineGraph()
+
+    def getPostsPerHourLine(self):
+        hourbins = [list(self.hours).count(self.hourrange[i]) for i in range(len(self.hourrange))]
+        l = LineGraph(self.hourrange, hourbins, 'Hour', 'Posts', 'Frequency of Posts per Hour', 'Posts', 'pphl.html')
+        l.spawnLineGraph()
+
 
 class LineGraph:
     def __init__(self, x, y, xlabel, ylabel, title, legend, outputfile):
@@ -28,19 +61,18 @@ class LineGraph:
         x = self._x
         y = self._y
         l = figure(title=self._title, x_axis_label=self._xlabel, y_axis_label=self._ylabel)
-        l.line(x, y, legend = "Posts", line_width=2)
+        l.line(x, y, legend="Posts", line_width=2)
         show(l)
 
-times = pd.DatetimeIndex(data.created_time)
-data = data.set_index('created_time')
+
+'''
 ###Reactions
 # dfreacts = {'id':[i.get('id') for i in indextimereacts]}
 # pd.DataFrame( columns=
 ###Getting ranges, making bins and splitting up data
-reacts = data.reactions
+
 
 dfreacts = [i for nest in reacts for i in nest]
-print(dfreacts)
 dfreacts = pd.DataFrame({'id': [i.get('id') for i in dfreacts],
                          'name': [i.get('name') for i in dfreacts],
                          'type': [i.get('type') for i in dfreacts]}, columns=['id', 'name', 'type'])
@@ -74,11 +106,6 @@ hours = times.hour
 hourrange = np.arange(24)
 
 
-
-#Trying out pivot table
-#dfreacts.pivot_table('', rows='title',
-#                               cols='gender', aggfunc='mean')
-
 def getFriendsNReactPie():
     reactbins = [list(dfreacts['name']).count(friendrange[i]) for i in range(len(friendrange))]
     explode = [0.5 for i in range(len(friendrange))]
@@ -87,49 +114,6 @@ def getFriendsNReactPie():
             shadow=True, startangle=90)
     ax1.axis('equal')
     plt.show()
-
-
-def getPostsPerYearLine():
-    yearbins = [list(years).count(yearrange[i]) for i in range(len(yearrange))]
-    l = LineGraph(yearrange, yearbins, 'Year', 'Posts', ' Frequency of Posts Posts Per Year', 'Posts', 'ppyl.html')
-    l.spawnLineGraph()
-
-
-
-def getPostsPerMonthLine():
-    monthbins = [list(months).count(monthrange[i]) for i in range(len(monthrange))]
-    plt.plot(monthrange, monthbins, label='Posts')
-    # plt.plot(x2, y2, label ='Second Line')
-    plt.xlabel('Month')
-    plt.ylabel('Posts')
-    plt.title('Frequency of posts per month')
-    plt.xticks(np.arange(min(monthrange), max(monthrange) + 1, 1.0))
-    plt.legend()
-    plt.show()
-
-
-def getPostsPerDayOfWeekLine():
-    daybins = [list(daysofweek).count(dayrange[i]) for i in range(len(dayrange))]
-    plt.plot(dayrange, daybins, label='Posts')
-    # plt.plot(x2, y2, label ='Second Line')
-    plt.xlabel('Day')
-    plt.ylabel('Posts')
-    plt.title('Frequency of posts per day')
-    plt.xticks(np.arange(min(dayrange), max(dayrange) + 1, 1.0))
-    plt.legend()
-    plt.show()
-
-
-def getPostsPerHourLine():
-    hourbins = [list(hours).count(hourrange[i]) for i in range(len(hourrange))]
-    plt.plot(hourrange, hourbins, label='Posts')
-    plt.xlabel('Hour')
-    plt.ylabel('Posts')
-    plt.title('Frequency of your posts per hour')
-    plt.xticks(np.arange(min(hourrange), max(hourrange) + 1, 1.0))
-    plt.legend()
-    plt.show()
-
 
 def getPostsPerHourBars():
     hourbins = [list(hours).count(hourrange[i]) for i in range(len(hourrange))]
@@ -151,17 +135,6 @@ def getReactsPerHourBars():
     plt.xticks(np.arange(min(hourrange), max(hourrange) + 1, 1.0))
     plt.show()
 
-
-def getTypeReactsAll():
-    reactbins = [len()]
-
-
-l = LineGraph()
-
-getPostsPerYearLine()
-
 '''
-plt.xlabel('Time')
-plt.ylabel('Frequency')
-plt.title('Frequency of posts during the day\n')
-'''
+# c = ChartLauncher()
+# c.getPostsPerHourLine()
