@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		* {
+		box-sizing: border-box;
+		}
+		 
+		*:focus {
+			outline: none;
+		}
+
+		body {
+		font-family: Arial;
+		background-color: #5F9EA0;
+		padding: 15px;
+		}
+
+		.statistics {
+		text-align: center;
+		color: #DEB887;
+		}
+	</style>
+
+<link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.css"
+    rel="stylesheet" type="text/css">
+<link
+    href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.2.min.css"
+    rel="stylesheet" type="text/css">
+
+<script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.js"></script>
+<script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.2.min.js"></script>
+
+</head>
+
+<body>
+		<div class="statistics">
+			<h1>Your statistics</h1>
+		</div>
+		<center>
+	        {{div | safe}}
+	        {{script | safe}}
+	    	<br><br><br>
+	        {{ div2 | safe }}
+	        {{ script2 | safe }}
+	    </center>
+</body>
+</html>
