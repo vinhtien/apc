@@ -128,7 +128,7 @@ class Extraction:
                                   'delta': timedeltatot}, index=indexpc)
 
         return commentdf
-
+"""
     def getFriendsCommentReactTotalDF(self):
         commfriends = self.getPostCommentMultiIndexDF().groupby('name')
         ckeys = list(commfriends.groups.keys())
@@ -150,10 +150,13 @@ class Extraction:
         dfdict = {'name':friendrange, 'comments':commtots, 'reactions':reactots}
         df = pd.DataFrame(dfdict)
         df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
-        return df
+        return df"""
 
-    ### Tien: I add this as a draft function for clustering.py
-    def getFriendsCommentReactTotalDFOnly(self):
+    ### This function was clone as same as the one you did, but I only make it return comments and reactions
+    ### to avoid other extraction on the clustering because only numeric values are valid
+    ### besides, I changed the commtots.append(np.nan) to (0) instead
+    ### So, I make an arguments in the function so that we can retrieve comments and reactions number only or with also the commentor :D
+    def getFriendsCommentReactTotalDF(self, showCommentors=False):
         commfriends = self.getPostCommentMultiIndexDF().groupby('name')
         ckeys = list(commfriends.groups.keys())
         reactfriends = self.getnReactionsxFriendPivot().groupby('name')
@@ -171,7 +174,8 @@ class Extraction:
                 reactots.append(reactfriends.get_group(i)['total'][0])
             else:
                 reactots.append(0)
-        dfdict = {'comments':commtots, 'reactions':reactots}
+        if(showCommentors): dfdict = {'name':friendrange, 'comments':commtots, 'reactions':reactots}
+        else: dfdict = {'comments':commtots, 'reactions':reactots}
         df = pd.DataFrame(dfdict)
         #df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
         return df
