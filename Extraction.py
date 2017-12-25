@@ -73,7 +73,7 @@ class Extraction:
                   'LIKE': [i[2] for i in ntypereacts],
                   'LOVE': [i[3] for i in ntypereacts],
                   'SAD': [i[4] for i in ntypereacts],
-                  'WOW': [i[5] for i in ntypereacts],
+                  #'WOW': [i[5] for i in ntypereacts],
                   'total': [list(dfreacts['name']).count(friendrange[i]) for i in range(len(friendrange))]}
         return pd.DataFrame(dfdict, columns=frcolumns).set_index('name')
 
@@ -107,7 +107,10 @@ class Extraction:
                     ct = pd.to_datetime(flat.get('created_time'))
                     timedeltas.append(ct - self.time[i])
                     commtimes.append(ct)
-                    names.append(flat.get('from').get('name'))
+                    try:
+                        names.append(flat.get('from').get('name'))
+                    except:
+                        names.append('Others')
                     messages.append(flat.get('message'))
 
                 indextups.extend([(self.time[i], commtimes[k]) for k in range(len(commtimes))])
@@ -148,6 +151,27 @@ class Extraction:
         df = pd.DataFrame(dfdict)
         df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
         return df
-e = Extraction()
-df = e.getFriendsCommentReactTotalDF()
-print(df)
+
+    ### Tien: I add this as a draft function for clustering.py
+    def getFriendsCommentReactTotalDFOnly(self):
+        commfriends = self.getPostCommentMultiIndexDF().groupby('name')
+        ckeys = list(commfriends.groups.keys())
+        reactfriends = self.getnReactionsxFriendPivot().groupby('name')
+        rkeys = list(reactfriends.groups.keys())
+        friendrange = list(set(ckeys + rkeys))
+        reactots = []
+        commtots = []
+        for i in friendrange:
+            if i in ckeys:
+                pass
+                commtots.append(len(commfriends.get_group(i)['name']))
+            else:
+                commtots.append(0)
+            if i in rkeys:
+                reactots.append(reactfriends.get_group(i)['total'][0])
+            else:
+                reactots.append(0)
+        dfdict = {'comments':commtots, 'reactions':reactots}
+        df = pd.DataFrame(dfdict)
+        #df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
+        return df
