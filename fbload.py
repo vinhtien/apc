@@ -8,10 +8,10 @@ class FBLoad:
 
     def __init__(self, newtoken):
         self._token = newtoken
-        self._posts = self.initfeed(self, newtoken)
+        self._posts = self.initfeed()
 
-    def initfeed(self, tkn):
-        postreq = "https://graph.facebook.com/v2.11/me?fields=posts&access_token=" + tkn
+    def initfeed(self):
+        postreq = "https://graph.facebook.com/v2.11/me?fields=posts&access_token=" + self._token
         initPost = req.request('GET', postreq)
         posts = [initPost.json()]
         return posts
@@ -38,5 +38,3 @@ class FBLoad:
             print(len(self._posts) + " posts loaded")
         except:
             pass  # Run until an error is raised at end of feed
-
-

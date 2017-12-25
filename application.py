@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, session, request, render_template
-from flask_oauth import OAuth
+from flask_oauthlib.client import OAuth
 from bokeh.plotting import figure, show, output_file, save
 from bokeh.mpl import to_bokeh
 import matplotlib.pyplot as plt
@@ -55,7 +55,7 @@ def facebook_authorized(resp):
     session['facebook_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
     # return ("token : " + get_facebook_oauth_token()[0] +'<br>' + "id : " + me.data['id'] + '<br>' 
-           # + "name : " + me.data['name'] )
+    #        + "name : " + me.data['name'] )
     return redirect('/statistics')
 
 
