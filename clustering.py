@@ -19,7 +19,7 @@ def showCluster(numbers_ofcluster = 6):
     ex = Extraction.Extraction()
     data = Extraction.Extraction()._df
     # Get the dataframe that stores only total number of commments and reactions per user (without user name)
-    a = ex.getFriendsCommentReactTotalDFOnly()
+    a = ex.getFriendsCommentReactTotalDF()
 
     # Initialize the model with 2 parameters -- number of clusters and random state.
     kmeans_model = KMeans(n_clusters=numbers_ofcluster, random_state=100) # random_state is a kind of rerun the process to find the good results
