@@ -36,3 +36,9 @@ A group project under the course of Advanced Programming Concepts. This project 
 @FOR TECHNICAL SPECIFICATION (REPORT)
 
 >There is a draft of Technical Specification docx file, please just feel free to play with it!
+
+### Dependencies
+
+The following command should install all required libraries :
+
+`pip install flask flask_oauthlib matplotlib numpy pandas urllib json hashlib base64 bokeh==0.12.2 sklearn` ...
