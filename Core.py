@@ -212,7 +212,7 @@ class Core:
             elif (reactionsOfPost):
                 field = 'reactions'
                 return field
-        return None
+        return ''
 
 
     """ getNextURL
