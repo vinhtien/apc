@@ -23,6 +23,10 @@ A group project under the course of Advanced Programming Concepts. This project 
     - Includes comments and reactions extraction
     - Summarizing all reactions and plotting graph
 
+>Clustering:
+    - A very first simple clustering graph with K-Means integrated (Tien)
+    - Inherited an extract function from Jan
+
 @FOR ONLINE TOKEN RETRIEVING
 
 >Version of George:
