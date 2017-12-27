@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 16 14:52:36 2017
-
-@author: jswim
-"""
 import json
 import pandas as pd
 import numpy as np
@@ -59,23 +53,47 @@ class Extraction:
         Returns a pandas.DataFrame() with columns = ['name','ANGRY', 'HAHA', 'LIKE', 'LOVE', 'SAD', 'WOW','total']
         '''
         dfreacts = self.getReactionsDFAll()
-        typereact = list(dfreacts.groupby('name')['type'])
-        reactrange = list(dfreacts.groupby('type'))
-        reactrange = [reactrange[i][0] for i in range(len(reactrange))]
-        friendrange = [i[0] for i in typereact]
-        # ntypereacts makes per friend a list of count per reaction type
-        ntypereacts = [[list(list(typereact)[i][1]).count(reactrange[j]) for j in range(len(reactrange))] for i in
-                       range(len(friendrange))]
-        frcolumns = ['name', 'ANGRY', 'HAHA', 'LIKE', 'LOVE', 'SAD', 'WOW', 'total']
-        dfdict = {'name': friendrange,
-                  'ANGRY': [i[0] for i in ntypereacts],
-                  'HAHA': [i[1] for i in ntypereacts],
-                  'LIKE': [i[2] for i in ntypereacts],
-                  'LOVE': [i[3] for i in ntypereacts],
-                  'SAD': [i[4] for i in ntypereacts],
-                  #'WOW': [i[5] for i in ntypereacts],
-                  'total': [list(dfreacts['name']).count(friendrange[i]) for i in range(len(friendrange))]}
-        return pd.DataFrame(dfdict, columns=frcolumns).set_index('name')
+        typereact = dfreacts.groupby('name')
+        friendrange = list(typereact.groups.keys())
+        angry, haha, like, love, sad, wow = [], [], [], [], [], []
+
+        for i in friendrange:
+            try:
+                react = typereact.get_group(i).groupby('type').get_group('ANGRY')
+                angry.append(react.shape[0])
+            except:
+                angry.append(0)
+            try:
+                react = typereact.get_group(i).groupby('type').get_group('HAHA')
+                haha.append(react.shape[0])
+            except:
+                haha.append(0)
+            try:
+                react = typereact.get_group(i).groupby('type').get_group('LIKE')
+                like.append(react.shape[0])
+            except:
+                like.append(0)
+            try:
+                react = typereact.get_group(i).groupby('type').get_group('LOVE')
+                love.append(react.shape[0])
+            except:
+                love.append(0)
+            try:
+                react = typereact.get_group(i).groupby('type').get_group('SAD')
+                sad.append(react.shape[0])
+            except:
+                sad.append(0)
+            try:
+                react = typereact.get_group(i).groupby('type').get_group('WOW')
+                wow.append(react.shape[0])
+            except:
+                wow.append(0)
+
+        frcolumns = ['name', 'ANGRY', 'HAHA', 'LIKE', 'LOVE', 'SAD', 'WOW']
+        dfdict = {'name':friendrange, 'ANGRY':angry, 'HAHA':haha, 'LIKE':like, 'LOVE':love, 'SAD':sad, 'WOW':wow}
+        df = pd.DataFrame(dfdict, columns=frcolumns)
+        df['total'] = df.sum(axis=1)
+        return df.set_index('name')
 
     def getnReactionsxFriendPivot(self):
         '''
@@ -128,35 +146,13 @@ class Extraction:
                                   'delta': timedeltatot}, index=indexpc)
 
         return commentdf
-"""
-    def getFriendsCommentReactTotalDF(self):
-        commfriends = self.getPostCommentMultiIndexDF().groupby('name')
-        ckeys = list(commfriends.groups.keys())
-        reactfriends = self.getnReactionsxFriendPivot().groupby('name')
-        rkeys = list(reactfriends.groups.keys())
-        friendrange = list(set(ckeys + rkeys))
-        reactots = []
-        commtots = []
-        for i in friendrange:
-            if i in ckeys:
-                pass
-                commtots.append(len(commfriends.get_group(i)['name']))
-            else:
-                commtots.append(np.nan)
-            if i in rkeys:
-                reactots.append(reactfriends.get_group(i)['total'][0])
-            else:
-                reactots.append(np.nan)
-        dfdict = {'name':friendrange, 'comments':commtots, 'reactions':reactots}
-        df = pd.DataFrame(dfdict)
-        df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
-        return df"""
 
-    ### This function was clone as same as the one you did, but I only make it return comments and reactions
-    ### to avoid other extraction on the clustering because only numeric values are valid
-    ### besides, I changed the commtots.append(np.nan) to (0) instead
-    ### So, I make an arguments in the function so that we can retrieve comments and reactions number only or with also the commentor :D
     def getFriendsCommentReactTotalDF(self, showCommentors=False):
+        '''
+        Returns pandas.DataFrame() with total number of comment and reaction for each friend. If there is
+        no value for a particular column fills with 0. If showCommentors = False, 'name' is not returned in df
+        as column. 
+        '''
         commfriends = self.getPostCommentMultiIndexDF().groupby('name')
         ckeys = list(commfriends.groups.keys())
         reactfriends = self.getnReactionsxFriendPivot().groupby('name')
@@ -166,7 +162,6 @@ class Extraction:
         commtots = []
         for i in friendrange:
             if i in ckeys:
-                pass
                 commtots.append(len(commfriends.get_group(i)['name']))
             else:
                 commtots.append(0)
@@ -177,5 +172,4 @@ class Extraction:
         if(showCommentors): dfdict = {'name':friendrange, 'comments':commtots, 'reactions':reactots}
         else: dfdict = {'comments':commtots, 'reactions':reactots}
         df = pd.DataFrame(dfdict)
-        #df['total'] = df.comments.fillna(0) + df.reactions.fillna(0)
         return df
