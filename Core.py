@@ -307,6 +307,3 @@ class Core:
     def setBatchSize(self, size):
         #  Sets size of request (number of posts retrieved in a single API call)
         self._batchSize = size
-elnur = Core('EAACEdEose0cBAC9OkaCNrgPtDObkwoJYW30xH1P9ZCfPAJW5R5MUIdmWpKTmNoZAgTTiURAb3qlQYsEThDVZAh5oOIxRrHZCPONilVKpqGFzZAan7b1ywkdyIJPIrPsxEyHf5vgcRBdGZACEZCGyHfyLiL9YGlswJIgMtXjZBblwUhRMEHYGBij9ttMscBKwtRMZD')
-elnur.setBatchSize(300)
-elnur.printPosts()

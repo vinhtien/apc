@@ -2,8 +2,8 @@ import json
 import pandas as pd
 import numpy as np
 
-file = open('postsNreactz.txt', 'r')
-output = json.loads(file.read())
+# file = open('postsNreactz.txt', 'r')
+# output = json.loads(file.read())
 
 
 class Extraction:
@@ -13,7 +13,7 @@ class Extraction:
     Converts timestamps to datetime objects.
     '''
 
-    def __init__(self):
+    def __init__(self, output):
         self._df = pd.DataFrame({
             'comments': [i.get('comments') for i in output],
             'id': [i.get('id') for i in output],
