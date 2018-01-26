@@ -82,7 +82,6 @@ class Core:
                 print('.request (%s) page (%s) retrieving from: %s' % (self.totalRequests, self._retrieveCount, url if (self._urlShow) else 'Facebook'))
                 response = self.urllib.request.urlopen(reg)
                 try:
-                    # data = self.json.loads(response.read(), encoding='UTF-8')
                     data = self.json.load(reader(response))
                     # taking a short snap
                     self.time.sleep(self._timeOut)
