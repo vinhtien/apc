@@ -1,12 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 16 22:16:25 2017
-
-@author: jswim
-"""
 import numpy as np
 import Extraction
 from bokeh.plotting import figure, show
+from bokeh.models import ColumnDataSource
 
 
 class ChartLauncher:
@@ -53,25 +48,31 @@ class ChartLauncher:
         graph = figure(title = 'Reactions per Post Hour', x_axis_label='Hour', y_axis_label='Reactions')
         graph.vbar(self.hourrange, top=hourbins, width = 0.5)
         return graph
+    
+    def getFriendsNReactBars(self):
+        df = self.data.getNumTypeReactionsDF().groupby('name')
+        keys = list(df.groups.keys())
+        colors = ['#f44242', '#d6f441', '#8e41f4', '#4641f4', '#43f441', '#f4a641']
+        legend = ['Angry', 'Haha', 'Like', 'Love', 'Sad', 'Wow']
+        data = {'friends':keys,
+                'angry':[df.get_group(i)['ANGRY'][0] for i in keys],
+                'haha':[df.get_group(i)['HAHA'][0] for i in keys],
+                'like':[df.get_group(i)['LIKE'][0] for i in keys],
+                'love':[df.get_group(i)['LOVE'][0] for i in keys],
+                'sad':[df.get_group(i)['SAD'][0] for i in keys],
+                'wow':[df.get_group(i)['WOW'][0] for i in keys]}
+        source = ColumnDataSource(data=data)
+        
+        graph = figure(x_range=keys, plot_height=250, title='Reactions per Friend', plot_width=1000)
+        graph.vbar_stack(legend, x= 'friends' , width=0.9, color=colors, source=source, legend=legend)
+        graph.y_range.start = 0
+        graph.x_range.range_padding = 0.5
+        graph.legend.location = 'top_right'
+        graph.legend.orientation = 'horizontal'
+        show(graph)
+        return graph
+        
 
-
-
-'''
-friendrange = [i[0] for i in typereact]
-dffriendreacts = dfreacts['name']
-
-
-
-def getFriendsNReactPie():
-    reactbins = [list(dfreacts['name']).count(friendrange[i]) for i in range(len(friendrange))]
-    explode = [0.5 for i in range(len(friendrange))]
-    fig1, ax1 = plt.subplots()
-    ax1.pie(reactbins, explode=explode, labels=friendrange, autopct='%1.1f%%',
-            shadow=True, startangle=90)
-    ax1.axis('equal')
-    plt.show()
-
-'''
 c = ChartLauncher()
 #c.getPostsPerYearLine()
 #c.getPostsPerMonthLine()
@@ -79,3 +80,4 @@ c = ChartLauncher()
 #c.getPostsPerHourLine()
 #c.getReactsPerPostHourBars()
 #df = c.data.getTimeSeriesIndexDFAll()
+c.getFriendsNReactBars()
