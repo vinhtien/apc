@@ -49,8 +49,6 @@ def facebook_authorized(resp):
         return redirect(next_url)
     session['facebook_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
-    # return ("token : " + get_facebook_oauth_token()[0] +'<br>' + "id : " + me.data['id'] + '<br>' 
-    #        + "name : " + me.data['name'] )
     return redirect('/statistics')
 
 
