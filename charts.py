@@ -6,6 +6,9 @@ from bokeh.embed import components
 
 
 class ChartLauncher:
+    '''
+    ChartLauncher() take output from Extraction() and has methods to launch individual charts.
+    '''
     def __init__(self, output):
         self.data = Extraction.Extraction(output)
         self.time = self.data.time
@@ -19,6 +22,9 @@ class ChartLauncher:
         self.hourrange = np.arange(24)
 
     def getPostsPerYearLine(self):
+        '''
+        Returns a line graph which has your number of posts on y-axis and years on x-axis.
+        '''
         yearbins = [list(self.years).count(self.yearrange[i]) for i in range(len(self.yearrange))]
         graph = figure(title='Frequency of Posts Per Year', x_axis_label='Posts', y_axis_label='Year')
         graph.line(self.yearrange, yearbins, legend='Posts', line_width=2)
@@ -27,6 +33,9 @@ class ChartLauncher:
         
         
     def getPostsPerMonthLine(self):
+        '''
+        Returns a line graph which has your number of posts on y-axis and months on x-axis.
+        '''
         monthbins = [list(self.months).count(self.monthrange[i]) for i in range(len(self.monthrange))]
         graph = figure(title='Frequency of Posts per Month', x_axis_label='Month', y_axis_label='Posts')
         graph.line(self.monthrange, monthbins, legend='Posts', line_width=2)
@@ -34,6 +43,9 @@ class ChartLauncher:
         return graph
     
     def getPostsPerDayOfWeekLine(self):
+        '''
+        Returns a line graph which has your number of posts on y-axis and days of week on x-axis.
+        '''
         daybins = [list(self.days).count(self.dayrange[i]) for i in range(len(self.dayrange))]
         graph = figure(title='Frequency of Posts per Day', x_axis_label='Day', y_axis_label='Posts')
         graph.line(self.dayrange, daybins, legend='Posts', line_width=2)
@@ -41,6 +53,9 @@ class ChartLauncher:
         return graph
 
     def getPostsPerHourLine(self):
+        '''
+        Returns a line graph which has your number of posts on y-axis and hour on x-axis.
+        '''
         hourbins = [list(self.hours).count(self.hourrange[i]) for i in range(len(self.hourrange))]
         graph = figure(title='Frequency of Posts per Hour', x_axis_label='Hour', y_axis_label='Posts')
         graph.line(self.hourrange, hourbins, legend = 'Posts', line_width=2)
@@ -48,6 +63,9 @@ class ChartLauncher:
         return graph
     
     def getReactsPerPostHourBars(self):
+        '''
+        Returns a vertical bar graph which has number of reactions per post/hour on y-axis and hours on x-axis.
+        '''
         df, hourbins = [], []
         try:
             df = self.data.getTimeSeriesIndexDFAll()['reactions'].groupby(self.hours)
@@ -60,6 +78,9 @@ class ChartLauncher:
         return graph
     
     def getFriendsNReactBars(self):
+        '''
+        Doesn't work because can't figure out how to display so many names. 
+        '''
         df = self.data.getNumTypeReactionsDF().groupby('name')
         keys = list(df.groups.keys())
         colors = ['#f44242', '#d6f441', '#8e41f4', '#4641f4', '#43f441', '#f4a641']
