@@ -63,7 +63,7 @@ class ChartLauncher:
         df = self.data.getNumTypeReactionsDF().groupby('name')
         keys = list(df.groups.keys())
         colors = ['#f44242', '#d6f441', '#8e41f4', '#4641f4', '#43f441', '#f4a641']
-        legend = ['Angry', 'Haha', 'Like', 'Love', 'Sad', 'Wow']
+        legend = ['angry', 'haha', 'like', 'love', 'sad', 'wow']
         data = {'friends':keys,
                 'angry':[df.get_group(i)['ANGRY'][0] for i in keys],
                 'haha':[df.get_group(i)['HAHA'][0] for i in keys],
@@ -73,14 +73,13 @@ class ChartLauncher:
                 'wow':[df.get_group(i)['WOW'][0] for i in keys]}
         source = ColumnDataSource(data=data)
         
-        graph = figure(x_range=keys, plot_height=250, title='Reactions per Friend', plot_width=1000)
-        graph.vbar_stack(legend, x= 'friends' , width=0.9, color=colors, source=source, legend=legend)
+        graph = figure(x_range=keys, title='Reactions per Friend', width=1000)
+        graph.vbar_stack(legend, x= 'friends' , width=1, color=colors, source=source, legend=legend)
         graph.y_range.start = 0
         graph.x_range.range_padding = 0.5
         graph.legend.location = 'top_right'
         graph.legend.orientation = 'horizontal'
-        # show(graph)
-        graph.toolbar_location="above"
+        #show(graph)
         return graph
         
 
