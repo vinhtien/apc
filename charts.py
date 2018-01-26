@@ -112,11 +112,4 @@ class ChartLauncher:
                 components(self.getPostsPerHourLine()),
                 components(self.getReactsPerPostHourBars())])
 
-# c = ChartLauncher()
-#c.getPostsPerYearLine()
-#c.getPostsPerMonthLine()
-#c.getPostsPerDayOfWeekLine()
-#c.getPostsPerHourLine()
-#c.getReactsPerPostHourBars()
-#df = c.data.getTimeSeriesIndexDFAll()
-# c.getFriendsNReactBars()
+

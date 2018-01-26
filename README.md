@@ -39,6 +39,6 @@ A group project under the course of Advanced Programming Concepts. This project 
 
 ### Dependencies
 
-The following command should install all required libraries :
+The following command should install almost all required libraries :
 
-`pip install flask flask_oauthlib matplotlib numpy pandas urllib json hashlib base64 bokeh==0.12.2 sklearn` ...
+`pip install flask flask_oauthlib matplotlib numpy pandas urllib json hashlib base64 bokeh==0.12.7 sklearn`
