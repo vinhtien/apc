@@ -4,12 +4,9 @@ Created on Sat Dec 16 22:16:25 2017
 
 @author: jswim
 """
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import Extraction
-import bokeh
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure, show
 
 
 class ChartLauncher:
@@ -27,80 +24,42 @@ class ChartLauncher:
 
     def getPostsPerYearLine(self):
         yearbins = [list(self.years).count(self.yearrange[i]) for i in range(len(self.yearrange))]
-        l = LineGraph('Year', 'Posts', ' Frequency of Posts Posts Per Year')
-        l.addLine(self.yearrange, yearbins, 'Posts', 2)
-        return l
-
+        graph = figure(title='Frequency of Posts Per Year', x_axis_label='Posts', y_axis_label='Year')
+        graph.line(self.yearrange, yearbins, legend='Posts', line_width=2)
+        return graph
+        
+        
     def getPostsPerMonthLine(self):
         monthbins = [list(self.months).count(self.monthrange[i]) for i in range(len(self.monthrange))]
-        l = LineGraph('Month', 'Posts', 'Frequency of Posts per Month')
-        l.addLine(self.monthrange, monthbins, 'Posts', 2)
-        return l
-
+        graph = figure(title='Frequency of Posts per Month', x_axis_label='Month', y_axis_label='Posts')
+        graph.line(self.monthrange, monthbins, legend='Posts', line_width=2)
+        return graph
+    
     def getPostsPerDayOfWeekLine(self):
         daybins = [list(self.days).count(self.dayrange[i]) for i in range(len(self.dayrange))]
-        l = LineGraph('Day', 'Posts', 'Frequency of Posts per Day')
-        l.addLine(self.dayrange, daybins, 'Posts', 2)
-        return l
+        graph = figure(title='Frequency of Posts per Day', x_axis_label='Day', y_axis_label='Posts')
+        graph.line(self.dayrange, daybins, legend='Posts', line_width=2)
+        return graph
 
     def getPostsPerHourLine(self):
         hourbins = [list(self.hours).count(self.hourrange[i]) for i in range(len(self.hourrange))]
-        l = LineGraph('Hour', 'Posts', 'Frequency of Posts per Hour')
-        l.addLine(self.hourrange, hourbins, 'Posts', 2)
-        return l
+        graph = figure(title='Frequency of Posts per Hour', x_axis_label='Hour', y_axis_label='Posts')
+        graph.line(self.hourrange, hourbins, legend = 'Posts', line_width=2)
+        return graph
+    
+    def getReactsPerPostHourBars(self):
+        df = self.data.getTimeSeriesIndexDFAll()['reactions'].groupby(self.hours)
+        hourbins = [len(df.get_group(i)) for i in range(len(self.hourrange))]
+        graph = figure(title = 'Reactions per Post Hour', x_axis_label='Hour', y_axis_label='Reactions')
+        graph.vbar(self.hourrange, top=hourbins, width = 0.5)
+        return graph
 
-
-class LineGraph:
-    def __init__(self, xlabel, ylabel, title):
-        self.graph = figure(title=title, x_axis_label=xlabel, y_axis_label=ylabel)
-
-    def addLine(self, x, y, legend, line_width):
-        self.graph.line(x, y, legend=legend, line_width=line_width)
-
-    def spawnGraph(self, output):
-        output_file(output)
-        show(self.graph)
 
 
 '''
-###Reactions
-# dfreacts = {'id':[i.get('id') for i in indextimereacts]}
-# pd.DataFrame( columns=
-###Getting ranges, making bins and splitting up data
-
-
-dfreacts = [i for nest in reacts for i in nest]
-dfreacts = pd.DataFrame({'id': [i.get('id') for i in dfreacts],
-                         'name': [i.get('name') for i in dfreacts],
-                         'type': [i.get('type') for i in dfreacts]}, columns=['id', 'name', 'type'])
-typereact = list(dfreacts.groupby('name')['type'])
-reactrange = list(dfreacts.groupby('type'))
-reactrange = [reactrange[i][0] for i in range(len(reactrange))]
 friendrange = [i[0] for i in typereact]
 dffriendreacts = dfreacts['name']
-# for i in friendrange:
 
-
-###
-reactsyear = reacts.groupby(times.year)
-databyyear = data.groupby(times.year)
-years = times.year
-yearrange = list(map(int, sorted(set(sorted(years)[1:]))))  # range-birthyear
-###
-reactsmonth = reacts.groupby(times.month)
-databymonth = data.groupby(times.month)
-months = times.month
-monthrange = np.arange(13)
-###
-reactsday = reacts.groupby(times.dayofweek)
-databydayofweek = data.groupby(times.dayofweek)
-daysofweek = times.dayofweek
-dayrange = np.arange(7)
-###
-reactshour = reacts.groupby(times.hour)
-databyhour = data.groupby(times.hour)
-hours = times.hour
-hourrange = np.arange(24)
 
 
 def getFriendsNReactPie():
@@ -112,30 +71,11 @@ def getFriendsNReactPie():
     ax1.axis('equal')
     plt.show()
 
-def getPostsPerHourBars():
-    hourbins = [list(hours).count(hourrange[i]) for i in range(len(hourrange))]
-    plt.bar(hourrange, hourbins)
-    plt.xlabel('Hour')
-    plt.ylabel('Posts')
-    plt.title('Frequency of your posts per hour')
-    plt.xticks(np.arange(min(hourrange), max(hourrange) + 1, 1.0))
-    plt.show()
-
-
-# do more reacts/time
-def getReactsPerHourBars():
-    hourbins = [len(reactshour.get_group(i)) for i in range(len(hourrange))]
-    plt.bar(hourrange, hourbins)
-    plt.xlabel('Hour')
-    plt.ylabel('Reactions')
-    plt.title('Frequency of reactions per hour')
-    plt.xticks(np.arange(min(hourrange), max(hourrange) + 1, 1.0))
-    plt.show()
-
 '''
 c = ChartLauncher()
-graph = c.getPostsPerDayOfWeekLine()
-graph.spawnGraph()
-
-
-
+#c.getPostsPerYearLine()
+#c.getPostsPerMonthLine()
+#c.getPostsPerDayOfWeekLine()
+#c.getPostsPerHourLine()
+#c.getReactsPerPostHourBars()
+#df = c.data.getTimeSeriesIndexDFAll()
